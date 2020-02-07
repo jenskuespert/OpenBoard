@@ -212,6 +212,7 @@ class UBBoardController : public UBDocumentContainer
         void zoomRestore();
         void centerRestore();
         void centerOn(QPointF scenePoint = QPointF(0,0));
+        void ensureVisible(const QGraphicsItem* item);
         void zoom(const qreal ratio, QPointF scenePoint);
         void handScroll(qreal dx, qreal dy);
         void previousScene();

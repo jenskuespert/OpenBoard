@@ -931,6 +931,13 @@ void UBBoardController::centerOn(QPointF scenePoint)
     UBApplication::applicationController->adjustDisplayView();
 }
 
+void UBBoardController::ensureVisible(const QGraphicsItem* item)
+{
+    //qDebug() << "item: " << item << endl;
+    if(mControlView)
+        mControlView->ensureVisible(item);
+}
+
 void UBBoardController::zoom(const qreal ratio, QPointF scenePoint)
 {
 

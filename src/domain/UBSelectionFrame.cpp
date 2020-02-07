@@ -185,12 +185,18 @@ void UBSelectionFrame::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if (mIsLocked)
         return;
 
+    int operationMode=static_cast<int>(mOperationMode);
+    //qDebug() << "op-mode " << om << endl;
+    if(operationMode==om_moving) {
+                UBApplication::boardController->ensureVisible(this);
+    }
+
     QPointF dp = event->pos() - mPressedPos;
     QPointF rotCenter = mapToScene(rect().center());
 
     foreach (UBGraphicsItemDelegate *curDelegate, mEnclosedtems) {
 
-        switch (static_cast<int>(mOperationMode)) {
+        switch (operationMode) {
         case om_moving : {
             QGraphicsItem *item = curDelegate->delegated();
             QTransform ownTransform = item->transform();
