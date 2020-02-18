@@ -547,8 +547,9 @@ void UBGraphicsDelegateFrame::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     else if (moving())
     {
         QGraphicsItem* item= delegated();
-        if(item)
-            UBApplication::boardController->ensureVisible(item);
+        if(item) {
+            UBApplication::boardController->ensureVisible(event->pos());
+        }
         mTranslateX = move.dx();
         mTranslateY = move.dy();
         moveLinkedItems(move);

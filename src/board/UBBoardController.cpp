@@ -92,6 +92,7 @@
 
 #include <memory>
 #include <vector>
+#include <mutex>
 
 UBBoardController::UBBoardController(UBMainWindow* mainWindow)
 : UBDocumentContainer(mainWindow->centralWidget())
@@ -931,11 +932,25 @@ void UBBoardController::centerOn(QPointF scenePoint)
     UBApplication::applicationController->adjustDisplayView();
 }
 
-void UBBoardController::ensureVisible(const QGraphicsItem* item)
+static std::mutex ensureVisibleMutex;
+static volatile int ensureVisibleCounter=0;
+
+void UBBoardController::ensureVisible(const QPointF& pPosition)
 {
-    //qDebug() << "item: " << item << endl;
-    if(mControlView)
-        mControlView->ensureVisible(item);
+    // be careful to avoid nested calls
+    {
+        const std::lock_guard<std::mutex> lock(ensureVisibleMutex);
+        ++ensureVisibleCounter;
+    }
+    //qDebug() << "cnt: " << ensureVisibleCounter << ", pos: " << pPosition << endl;
+    if(ensureVisibleCounter==1 && mControlView) {
+        QPointF p(pPosition);  // copy because rx/ry are not (yet?) const-correct...
+        mControlView->ensureVisible(p.rx(), p.ry(), 0, 0);
+    }
+    {
+        const std::lock_guard<std::mutex> lock(ensureVisibleMutex);
+        --ensureVisibleCounter;
+    }
 }
 
 void UBBoardController::zoom(const qreal ratio, QPointF scenePoint)

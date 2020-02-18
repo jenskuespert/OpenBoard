@@ -188,7 +188,7 @@ void UBSelectionFrame::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     int operationMode=static_cast<int>(mOperationMode);
     //qDebug() << "op-mode " << om << endl;
     if(operationMode==om_moving) {
-                UBApplication::boardController->ensureVisible(this);
+        UBApplication::boardController->ensureVisible(event->pos());
     }
 
     QPointF dp = event->pos() - mPressedPos;
